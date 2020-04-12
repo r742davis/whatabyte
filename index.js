@@ -75,20 +75,31 @@ passport.deserializeUser((user, done) => {
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.isAuthenticated();
   next();
-}
-)
+});
 
 app.use("/", authRouter);
 
 /**
  * Routes Definitions
  */
+const secured = (req, res, next) => {
+  if (req.user) {
+    return next();
+  }
+  req.session.returnTo = req.originalUrl;
+  res.redirect("/login");
+};
+
 app.get("/", (req, res) => {
   res.render("index", { title: "Home" });
 });
 
-app.get("/user", (req, res) => {
-  res.render("user", { title: "Profile", userProfile: { nickName: "Auth0" } });
+app.get("/user", secured, (req, res) => {
+  const { _raw, _json, ...userProfile } = req.user;
+  res.render("user", { 
+    title: "Profile", 
+    userProfile: userProfile 
+  });
 });
 
 /**
