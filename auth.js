@@ -53,10 +53,10 @@ router.get("/logout", (req, res) => {
   const port = req.connection.localPort;
 
   if (port !== undefined && port !== 80 && port !== 443) {
-    returnTo = 
-      process.env.NODE_ENV === "production";
-      ? `${returnTo}/`
-      : `${returnTo}:${port}/`;
+    returnTo =
+      process.env.NODE_ENV === "production"
+        ? `${returnTo}/`
+        : `${returnTo}:${port}/`;
   }
 
   const logoutURL = new URL(
@@ -65,13 +65,13 @@ router.get("/logout", (req, res) => {
 
   const searchString = querystring.stringify({
     client_id: process.env.AUTH0_CLIENT_ID,
-    returnTo: returnTo
+    returnTo: returnTo,
   });
   logoutURL.search = searchString;
 
   res.redirect(logoutURL);
-}
-)
+});
 /**
  * Module Exports
  */
+module.exports = router;
